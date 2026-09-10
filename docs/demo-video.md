@@ -1,11 +1,24 @@
-# Démonstration vidéo à enregistrer (60 à 90 secondes)
+# Démonstration MedDiag IA
 
-Utiliser exclusivement un cas fictif. Garder la mention « Prototype académique, aucune utilisation clinique » visible. Ne filmer ni clé API ni terminal contenant des données personnelles.
+[Vidéo MP4, 51 secondes](media/meddiag-demo.mp4) · [Sous-titres](media/meddiag-demo.fr.vtt)
 
-- 0–10 s : présenter l’interface et le caractère académique du projet.
-- 10–25 s : montrer la saisie et la structuration d’un exemple fictif.
-- 25–45 s : expliquer la préparation LangGraph, les deux analyses parallèles et l’arbitre.
-- 45–65 s : montrer les sorties et la validation dans l’interface ; préciser qu’elle n’est pas un contrôle serveur.
-- 65–80 s : résumer la stack et les limites.
+## Ce que montre la vidéo
 
-Filmer un véritable parcours. Si les appels sont simulés, afficher en permanence « Réponses simulées ». Exporter en MP4 et ajouter le lien à ce README après vérification.
+L’interface Next.js réelle, avec un scénario entièrement fictif. Les réponses API sont interceptées par le script d’enregistrement et remplacées par des données de démonstration. Aucun modèle externe n’est appelé. Le bandeau visible précise « Interface réelle · Données fictives · Réponses IA simulées ».
+
+1. Sélection du rôle infirmier et saisie d’un cas fictif.
+2. Lecture des informations structurées.
+3. Lancement du pipeline avec réponse simulée.
+4. Lecture de deux hypothèses pédagogiques.
+5. Transmission locale du dossier et sélection du rôle médecin.
+6. Relecture et confirmation du dossier fictif, sans prescription.
+
+La sélection de rôle, la transmission et la validation appartiennent à la session React. Elles ne constituent pas un contrôle d’accès serveur. La vidéo n’évalue ni la qualité des modèles ni la fiabilité clinique.
+
+## Reproduire l’enregistrement
+
+Lancer le frontend local sur le port 5180. Installer Playwright dans un environnement Node dédié, ainsi que son navigateur Chromium et son encodeur FFmpeg (`npx playwright install chromium ffmpeg`). Exécuter `node scripts/record-demo.cjs` depuis un environnement où `require('playwright')` est résolu. `DEMO_URL` accepte uniquement localhost ou 127.0.0.1. `CHROME_PATH` permet facultativement de choisir un exécutable Chromium local.
+
+Le script produit une vidéo WebM dans `docs/media` et vérifie que la validation finale est atteinte sans erreur JavaScript. Pour obtenir le MP4, convertir le WebM avec FFmpeg : `ffmpeg -i capture.webm -c:v libx264 -crf 24 -pix_fmt yuv420p -movflags +faststart -an meddiag-demo.mp4`.
+
+Le script ne lit aucune clé API, n’utilise pas de profil navigateur personnel et simule tous les appels aux routes `/api/`.

@@ -150,7 +150,7 @@ function LoginScreen({onLogin}) {
             <Icon name="local_hospital" size={36} color={P.text}/>
           </div>
           <div style={{fontSize:28,fontWeight:700,color:P.text,letterSpacing:"-0.5px"}}>MedDiag IA</div>
-          <div style={{fontSize:14,color:P.textMuted,marginTop:6}}>Diagnostic médical assisté par IA</div>
+          <div style={{fontSize:14,color:P.textMuted,marginTop:6}}>Exploration académique de pipelines IA</div>
         </div>
         <div style={{background:P.white,borderRadius:22,padding:32,boxShadow:P.shadowLg,border:`1px solid ${P.border}`}}>
           <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
@@ -184,7 +184,7 @@ function LoginScreen({onLogin}) {
           </Btn>
         </div>
         <div style={{textAlign:"center",marginTop:16,fontSize:11,color:P.textMuted,display:"flex",alignItems:"center",justifyContent:"center",gap:4}}>
-          <Icon name="lock" size={12}/> Données patients protégées · Usage clinique uniquement
+          <Icon name="lock" size={12}/> Prototype académique · Cas fictifs uniquement
         </div>
       </div>
     </div>
@@ -1277,7 +1277,7 @@ function Phase4({data,onReset,onBack,userRole="infirmier",user,structData,patien
                     :submitted?"Dossier transmis — en attente":"Décision médicale requise"}
                 </div>
                 <div style={{fontSize:12,color:P.textMuted}}>
-                  {(submittedCase?.doctorValidated)?`Dr ${submittedCase.doctorSignature} · ${submittedCase.doctorTimestamp}`:submitted?"Le médecin a été notifié":"Le médecin doit valider le diagnostic et prescrire le traitement"}
+                  {(submittedCase?.doctorValidated)?`Dr ${submittedCase.doctorSignature} · ${submittedCase.doctorTimestamp}`:submitted?"Le dossier est disponible dans cette session":"Le médecin doit valider le diagnostic et prescrire le traitement"}
                 </div>
               </div>
             </div>

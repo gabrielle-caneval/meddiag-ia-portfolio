@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00.000 --> 00:05.000
+MedDiag IA. Interface réelle, cas fictif, réponses IA simulées.
+
+00:05.000 --> 00:10.000
+Collecte : saisie d’un scénario fictif dans l’interface infirmière.
+
+00:10.000 --> 00:15.000
+Vérification : lecture des informations structurées avant analyse.
+
+00:15.000 --> 00:23.000
+Pipeline simulé. Architecture du projet : préparation, deux analyses parallèles, puis arbitrage.
+
+00:23.000 --> 00:28.000
+Affichage de deux hypothèses pédagogiques. Aucune conclusion clinique.
+
+00:28.000 --> 00:33.000
+Transmission du dossier dans la session, puis changement de rôle.
+
+00:33.000 --> 00:39.000
+L’interface médecin permet de relire le dossier fictif.
+
+00:39.000 --> 00:46.000
+Confirmation manuelle et validation fictive, sans traitement prescrit.
+
+00:46.000 --> 00:51.000
+Python, FastAPI, LangGraph et Next.js. Validation locale à l’interface, sans autorisation serveur.

@@ -47,7 +47,11 @@ Ouvrir http://localhost:3000. API : http://localhost:8000/docs. Les appels néce
 
 ## Démonstration vidéo
 
-Un scénario d’enregistrement est fourni dans [docs/demo-video.md](docs/demo-video.md). Aucune vidéo de démonstration n’est encore publiée.
+[![Voir la démonstration MedDiag](docs/media/meddiag-demo.webp)](docs/media/meddiag-demo.mp4)
+
+[Lire ou télécharger la vidéo MP4 (51 secondes)](docs/media/meddiag-demo.mp4).
+
+Enregistrement de l’interface réelle avec données fictives et réponses IA simulées, sans appel à Groq. Il montre la collecte, la structuration, les résultats, la transmission locale du dossier et sa validation dans l’interface médecin. Les valeurs et hypothèses ne sont pas des conclusions médicales. Vidéo muette avec explications incrustées, [sous-titres français](docs/media/meddiag-demo.fr.vtt) et [description du parcours](docs/demo-video.md).
 
 ## Vérification technique
 
