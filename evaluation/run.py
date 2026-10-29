@@ -7,9 +7,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--repo', required=True, type=Path)
 parser.add_argument('--output', required=True, type=Path)
 parser.add_argument('--dry-run', action='store_true')
+parser.add_argument('--demo-only', action='store_true')
 args = parser.parse_args()
 cases_path = Path(__file__).with_name('cases.json')
 cases = json.loads(cases_path.read_text())
+if args.demo_only:
+    cases = cases[:1]
+    cases[0]['input']['transcription'] += ' Compléments fictifs du scénario de démonstration : fréquence respiratoire 32/min, saturation 88 % à l’air ambiant, fréquence cardiaque 96/min, tension 115/75 mmHg, patient conscient et orienté. Pas de cancer connu, immobilisation récente, chirurgie récente ni antécédent thromboembolique. Antigène pneumococcique urinaire positif. Il s’agit d’un cas pédagogique complet, pas d’un cas de benchmark.'
+    cases[0]['input']['vital_signs'] = {'temperature':'39','spo2':'88','fc':'96','tension':'115/75'}
 assert len({c['id'] for c in cases}) == len(cases)
 assert all(c['expected'].lower() not in c['input']['transcription'].lower() for c in cases)
 if args.dry_run:
@@ -26,13 +31,22 @@ from pipeline.graph import build_pipeline_graph
 from models.schemas import PatientRawData
 original_client = nodes.Groq
 calls = []
+import threading
+request_lock = threading.Lock()
+last_call = {}
 def traced_client(*a, **kw):
     client = original_client(*a, **kw, timeout=30.0, max_retries=0)
     create = client.chat.completions.create
     def record(**request):
+        if args.demo_only:
+            with request_lock:
+                wait = max(0, 45 - (time.monotonic() - last_call.get(request['model'], -1000)))
+                if wait: print('Pacing model requests', flush=True)
+                time.sleep(wait)
+                last_call[request['model']] = time.monotonic()
         response = create(**request)
         calls.append({'requested_model': request['model'], 'returned_model': response.model,
-                      'temperature': request.get('temperature'), 'max_tokens': request.get('max_tokens'),
+                      'finish_reason': response.choices[0].finish_reason, 'content': response.choices[0].message.content, 'temperature': request.get('temperature'), 'max_tokens': request.get('max_tokens'),
                       'usage': response.usage.model_dump() if response.usage else None})
         return response
     client.chat.completions.create = record
@@ -43,7 +57,7 @@ report = {'started_at': datetime.now(timezone.utc).isoformat(),
           'working_diff_sha256': hashlib.sha256(subprocess.check_output(['git', '-C', str(args.repo), 'diff'])).hexdigest(),
           'configured_models': {'prep': nodes.PREP_MODEL, 'analysis_a': nodes.TEXT_MODEL, 'analysis_b': nodes.MODEL_B, 'arbiter': nodes.MODEL_ARBITER},
           'cases_sha256': hashlib.sha256(cases_path.read_bytes()).hexdigest(),
-          'protocol': '8 fixed synthetic cases; actual extraction + full graph; one attempt per case; no diagnosis labels sent to models; no model judge; all failures retained.',
+          'protocol': ('Single demonstration case, not a benchmark; requests paced; source grounding reinforced.' if args.demo_only else '8 fixed synthetic cases; actual extraction + full graph; one attempt per case; no diagnosis labels sent to models; no model judge; all failures retained.'),
           'results': []}
 args.output.parent.mkdir(parents=True, exist_ok=True)
 def save():

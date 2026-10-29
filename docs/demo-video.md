@@ -1,5 +1,5 @@
 # Démonstration MedDiag
 
-Vidéo de 55 secondes, interface réelle et cas fictif de pneumonie. Nom de démonstration : Caneval Gabrielle ; patient fictif sans lien avec sa santé. Réponses réelles issues du second essai, enregistrées puis rejouées, sans modification. Le diagnostic attendu est retrouvé mais l’explication invente une IRM et un ECG. La confirmation finale illustre uniquement le contrôle de l’interface et ne vaut pas validation clinique.
+Interface réelle sur un cas fictif de pneumonie. Caneval Gabrielle est le nom de démonstration de l’utilisatrice ; le patient est fictif et sans lien avec sa santé. Les réponses sont réellement obtenues via Groq, enregistrées puis rejouées sans modification pendant la capture. Aucun résultat de benchmark ni taux de réussite n’est présenté. La confirmation finale illustre le contrôle de l’interface et ne vaut pas validation clinique.
 
-Voir `evaluation/results/summary.json` pour le bilan incomplet des huit cas et `evaluation/record-demo.cjs` pour l’enregistrement reproductible.
+Les scripts de préparation et d’enregistrement sont dans `evaluation/`. Les résultats de travail restent locaux.

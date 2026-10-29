@@ -34,7 +34,7 @@ GROQ_API_KEY   = os.getenv("GROQ_API_KEY")
 # Model identifiers are configurable because provider availability changes.
 PREP_MODEL = os.getenv("MEDDIAG_PREP_MODEL", "openai/gpt-oss-20b")
 TEXT_MODEL = os.getenv("MEDDIAG_TEXT_MODEL", "openai/gpt-oss-120b")
-MODEL_B = os.getenv("MEDDIAG_MODEL_B", "qwen/qwen3.8-27b")
+MODEL_B = os.getenv("MEDDIAG_MODEL_B", "openai/gpt-oss-20b")
 MODEL_ARBITER = os.getenv("MEDDIAG_ARBITER_MODEL", "openai/gpt-oss-120b")
 VISION_MODEL = os.getenv("MEDDIAG_VISION_MODEL", "")
 
@@ -43,6 +43,7 @@ VISION_MODEL = os.getenv("MEDDIAG_VISION_MODEL", "")
 
 def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int = 1024, model: str = None) -> str:
     import time, re
+    system += "\nAncrage factuel obligatoire : utilise exclusivement les faits fournis. Un examen proposé n’est jamais un examen réalisé. Ne transforme pas une radiographie en IRM. Les éléments manquants restent inconnus, jamais normaux par défaut. Distingue clairement observations, hypothèses et examens à demander."
     target_model = model or TEXT_MODEL
     fallback_models = list(dict.fromkeys([target_model, PREP_MODEL, MODEL_B]))
     
@@ -57,6 +58,7 @@ def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int =
                 ],
                 temperature=temperature,
                 max_tokens=max_tokens,
+                **({"reasoning_effort": "low"} if m.startswith("openai/gpt-oss-") else {}),
             )
             return response.choices[0].message.content
         except Exception as e:
@@ -73,6 +75,7 @@ def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int =
                             response = client2.chat.completions.create(
                                 model=m, messages=[{"role":"system","content":system},{"role":"user","content":user}],
                                 temperature=temperature, max_tokens=max_tokens,
+                            **({"reasoning_effort": "low"} if m.startswith("openai/gpt-oss-") else {}),
                             )
                             return response.choices[0].message.content
                         except Exception:
@@ -298,7 +301,9 @@ async def generation_node(state: dict) -> dict:
     output = call_llm(
         system=SYSTEM_GEN,
         model=PREP_MODEL,
-        user=f"""{step1_output}
+        user=f"""Données source faisant autorité : {json.dumps(state["structured_data"], ensure_ascii=False)}
+
+{step1_output}
 
 Génère un diagnostic différentiel complet avec justification clinique,
 drapeaux rouges, et éléments manquants pour chaque hypothèse.""",
@@ -319,7 +324,9 @@ async def evaluation_node(state: dict) -> dict:
     output = call_llm(
         system=SYSTEM_EVAL,
         model=PREP_MODEL,
-        user=f"""Raisonnement diagnostique à évaluer :
+        user=f"""Données source faisant autorité : {json.dumps(state["structured_data"], ensure_ascii=False)}
+
+Raisonnement diagnostique à évaluer :
 {step2_output}
 
 Évalue ce raisonnement et produis un prompt diagnostique optimisé
@@ -457,8 +464,8 @@ Génère le diagnostic. Réponds UNIQUEMENT en JSON valide :
     loop = asyncio.get_event_loop()
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=2)
     try:
-        future_a = loop.run_in_executor(executor, lambda: call_llm(SYSTEM_PRED, SHARED_PROMPT, 0.15, 1800, TEXT_MODEL))
-        future_b = loop.run_in_executor(executor, lambda: call_llm(SYSTEM_PRED, SHARED_PROMPT, 0.25, 1800, MODEL_B))
+        future_a = loop.run_in_executor(executor, lambda: call_llm(SYSTEM_PRED, SHARED_PROMPT, 0.15, 3000, TEXT_MODEL))
+        future_b = loop.run_in_executor(executor, lambda: call_llm(SYSTEM_PRED, SHARED_PROMPT, 0.25, 3000, MODEL_B))
         raw_a, raw_b = await asyncio.gather(future_a, future_b)
     finally:
         executor.shutdown(wait=False)
@@ -522,7 +529,7 @@ Réponds UNIQUEMENT avec ce JSON :
   }}
 }}"""
 
-    raw_c = call_llm(SYSTEM_ARBITER, arbiter_prompt, 0.1, 2200, MODEL_ARBITER)
+    raw_c = call_llm(SYSTEM_ARBITER, arbiter_prompt, 0.1, 3000, MODEL_ARBITER)
     diag_final = _parse_diag(raw_c)
     if not isinstance(diag_final, dict):
         raise ValueError("L’arbitre n’a pas fourni de résultat structuré valide.")

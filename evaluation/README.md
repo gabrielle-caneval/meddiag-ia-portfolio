@@ -25,7 +25,7 @@ Formulation éventuelle : « X/8 diagnostics attendus retrouvés au premier rang
 
 ## Nouvelle vidéo
 
-Le cas 01 (pneumonie) est choisi avant exécution, pas selon son résultat. Le script `record-demo.cjs` attend un fichier de résultats réel via `EVAL_RUN`. Il rejoue exactement les réponses enregistrées du cas 01 dans l'interface, sans inventer les hypothèses. La vidéo porte la mention « réponses IA enregistrées, rejouées » : elle ne prétend pas montrer un appel en direct. Si la réponse est erronée, le commentaire doit le dire ; ne pas remplacer la sortie par la réponse attendue.
+Le scénario de démonstration est une pneumonie fictive avec données complètes, distincte du benchmark. Le script `record-demo.cjs` attend un fichier de résultats réel via `EVAL_RUN`. Il rejoue exactement les réponses enregistrées du cas 01 dans l'interface, sans inventer les hypothèses. La vidéo porte la mention « réponses IA enregistrées, rejouées » : elle ne prétend pas montrer un appel en direct. Si la réponse est erronée, le commentaire doit le dire ; ne pas remplacer la sortie par la réponse attendue.
 
 « Caneval Gabrielle » est le nom de démonstration de l'utilisatrice. Le patient porte un nom explicitement fictif. La maladie du scénario ne décrit pas la santé de Gabrielle.
 
@@ -35,6 +35,7 @@ NODE_PATH=/Users/canevalgabrielle/.cache/codex-runtimes/codex-primary-runtime/de
 
 Aucune nouvelle vidéo ni aucun score ne doit remplacer les médias publics avant une exécution réelle et une inspection des résultats.
 
-## Résultat conservé
 
-Voir `results/summary.json`, `results/run-01.json` et `results/run-02.json`. Premier essai : modèles introuvables. Deuxième essai : un seul résultat exploitable sur huit, concordance de diagnostic sur la pneumonie mais invention de détails dans la justification. Sept échecs techniques. Les raw outputs sont des sorties non validées de modèles sur des données fictives, pas des conseils médicaux.
+## Démonstration seule
+
+`--demo-only` utilise un scénario fictif de pneumonie complété avec constantes et examen confirmatoire. Ce scénario guidé est distinct du jeu de huit vignettes et ne sert pas au calcul d’une performance. Les appels sont espacés. La capture rejoue les réponses réellement obtenues ; les sorties restent locales.

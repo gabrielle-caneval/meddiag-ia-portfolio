@@ -48,7 +48,7 @@ const diagnostic = sample.pipeline_response.diagnostic;
  await caption('03 | Orchestrer plusieurs analyses','Architecture : préparation LangGraph, deux analyses parallèles, puis un arbitre.');
  await page.getByRole('button',{name:/Analyser maintenant/}).click();
  await page.getByRole('heading',{name:'Résultats diagnostiques'}).waitFor({timeout:20000});
- await caption('04 | Lire les sorties','Pathologie attendue retrouvée, mais détails inventés dans la justification (IRM, ECG). Scores non calibrés.');
+ await caption('04 | Lire les sorties','Cas fictif de pneumonie : lire l’hypothèse, sa justification et les éléments à vérifier. Scores non calibrés.');
  await page.evaluate(()=>window.scrollTo({top:0,behavior:'smooth'}));await hold(5500);
  await page.screenshot({path:path.join(out,'meddiag-results.png')});
  await page.getByRole('button',{name:/Transmettre au médecin/}).click();

@@ -31,3 +31,6 @@ docs/media/*.png
 
 # Working video recordings
 evaluation/recording/
+
+# Evaluation outputs stay local; no public benchmark results.
+evaluation/results/
