@@ -20,8 +20,8 @@ exploitation pédagogique ou commerciale) interdite sans accord écrit préalabl
 
 """
 Nœuds du Pipeline LangGraph
-LLM texte  : Groq llama-3.3-70b-versatile
-LLM vision : Groq meta-llama/llama-4-scout-17b-16e-instruct
+Modèles texte configurables via MEDDIAG_* ; disponibilité dépendante du fournisseur.
+Vision désactivée tant qu’un modèle compatible n’est pas configuré.
 """
 from dotenv import load_dotenv
 load_dotenv()
@@ -31,13 +31,12 @@ import json
 from groq import Groq
 
 GROQ_API_KEY   = os.getenv("GROQ_API_KEY")
-# Nœuds 1-3 : modèle léger pour économiser les tokens quotidiens
-PREP_MODEL    = "meta-llama/llama-4-scout-17b-16e-instruct"  # Init/Gen/Eval — rapide, quota illimité
-# Nœud 4 : multi-LLM (quotas séparés)
-TEXT_MODEL    = "llama-3.3-70b-versatile"                    # IA A — quota 100k/j
-MODEL_B       = "llama-3.1-8b-instant"                       # IA B — quota séparé
-MODEL_ARBITER = "meta-llama/llama-4-scout-17b-16e-instruct"  # IA C — arbitre, quota séparé
-VISION_MODEL  = "meta-llama/llama-4-scout-17b-16e-instruct"
+# Model identifiers are configurable because provider availability changes.
+PREP_MODEL = os.getenv("MEDDIAG_PREP_MODEL", "openai/gpt-oss-20b")
+TEXT_MODEL = os.getenv("MEDDIAG_TEXT_MODEL", "openai/gpt-oss-120b")
+MODEL_B = os.getenv("MEDDIAG_MODEL_B", "qwen/qwen3.8-27b")
+MODEL_ARBITER = os.getenv("MEDDIAG_ARBITER_MODEL", "openai/gpt-oss-120b")
+VISION_MODEL = os.getenv("MEDDIAG_VISION_MODEL", "")
 
 
 # ─── LLM helpers ─────────────────────────────────────────────────────────────
@@ -45,7 +44,7 @@ VISION_MODEL  = "meta-llama/llama-4-scout-17b-16e-instruct"
 def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int = 1024, model: str = None) -> str:
     import time, re
     target_model = model or TEXT_MODEL
-    fallback_models = [target_model, PREP_MODEL, "llama-3.1-8b-instant"]
+    fallback_models = list(dict.fromkeys([target_model, PREP_MODEL, MODEL_B]))
     
     for attempt, m in enumerate(fallback_models):
         try:
@@ -87,6 +86,8 @@ def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int =
 
 def call_vision(image_base64: str, media_type: str, prompt: str) -> str:
     """Analyse une image ou un document via llama-4-scout (multimodal)."""
+    if not VISION_MODEL:
+        raise ValueError("Configure MEDDIAG_VISION_MODEL with an available vision model.")
     client = Groq(api_key=GROQ_API_KEY)
     response = client.chat.completions.create(
         model=VISION_MODEL,

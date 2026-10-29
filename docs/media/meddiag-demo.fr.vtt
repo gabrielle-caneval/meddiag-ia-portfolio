@@ -1,28 +1,33 @@
 WEBVTT
 
 00:00.000 --> 00:05.000
-MedDiag IA. Interface réelle, cas fictif, réponses IA simulées.
+MedDiag IA. Prototype académique. Caneval Gabrielle est le nom de démonstration.
+Cas fictif ; réponses IA réellement obtenues, enregistrées puis rejouées.
 
 00:05.000 --> 00:10.000
-Collecte : saisie d’un scénario fictif dans l’interface infirmière.
+Collecte d’un cas fictif : toux, fièvre, douleur thoracique et foyer radiographique.
+Ces informations ne décrivent pas la santé de Gabrielle.
 
-00:10.000 --> 00:15.000
-Vérification : lecture des informations structurées avant analyse.
+00:10.000 --> 00:16.000
+Vérification des données structurées par le modèle pendant l’évaluation.
 
-00:15.000 --> 00:23.000
-Pipeline simulé. Architecture du projet : préparation, deux analyses parallèles, puis arbitrage.
+00:16.000 --> 00:25.000
+Rejeu du résultat LangGraph : préparation du prompt,
+deux analyses parallèles puis arbitrage.
 
-00:23.000 --> 00:28.000
-Affichage de deux hypothèses pédagogiques. Aucune conclusion clinique.
+00:25.000 --> 00:32.000
+La pneumonie attendue apparaît au premier rang.
+Mais la justification invente une IRM et un ECG. Scores non calibrés.
 
-00:28.000 --> 00:33.000
-Transmission du dossier dans la session, puis changement de rôle.
+00:32.000 --> 00:38.000
+Transmission locale du dossier et changement de rôle de démonstration.
 
-00:33.000 --> 00:39.000
-L’interface médecin permet de relire le dossier fictif.
+00:38.000 --> 00:45.000
+Le rôle médecin relit le dossier. Il ne s’agit pas d’une authentification serveur.
 
-00:39.000 --> 00:46.000
-Confirmation manuelle et validation fictive, sans traitement prescrit.
+00:45.000 --> 00:50.000
+Confirmation fictive dans l’interface, sans validation clinique.
 
-00:46.000 --> 00:51.000
-Python, FastAPI, LangGraph et Next.js. Validation locale à l’interface, sans autorisation serveur.
+00:50.000 --> 00:55.280
+Python, FastAPI, LangGraph et Next.js.
+Cette vidéo démontre le parcours logiciel, pas une fiabilité médicale.

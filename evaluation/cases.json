@@ -1,0 +1,90 @@
+[
+  {
+    "id": "case-01",
+    "expected": "Pneumonie communautaire",
+    "source": "https://www.nhs.uk/conditions/pneumonia/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 42 ans, toux productive depuis quatre jours, fièvre à 39 °C, essoufflement et douleur thoracique droite augmentée par l’inspiration. Crépitants localisés à la base droite. Radiographie : foyer de condensation alvéolaire basal droit. Pas d’antécédent respiratoire connu.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-02",
+    "expected": "Bronchite aiguë",
+    "source": "https://www.nhs.uk/conditions/bronchitis/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 30 ans, toux depuis huit jours après rhinorrhée et mal de gorge, gêne thoracique uniquement à la toux. Température 37,4 °C, saturation 98 % à l’air ambiant. Pas de dyspnée au repos, pas de crépitants localisés. Radiographie sans foyer pulmonaire.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-03",
+    "expected": "Appendicite aiguë",
+    "source": "https://www.nhs.uk/conditions/appendicitis/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 25 ans, douleur initialement péri-ombilicale depuis douze heures, désormais localisée en fosse iliaque droite, aggravée par la marche et la toux. Nausées, perte d’appétit, température 38,2 °C. Sensibilité et défense localisée en fosse iliaque droite. Absence de brûlures urinaires.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-04",
+    "expected": "Cholécystite aiguë",
+    "source": "https://www.nhs.uk/conditions/acute-cholecystitis/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 48 ans, douleur persistante de l’hypochondre droit depuis dix heures irradiant vers l’épaule droite, nausées et température 38,5 °C. Douleur accentuée à l’inspiration lors de la palpation sous-costale droite. Échographie : calcul vésiculaire, paroi épaissie et liquide périvésiculaire.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-05",
+    "expected": "Pyélonéphrite aiguë",
+    "source": "https://www.nhs.uk/conditions/kidney-infection/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 34 ans non enceinte, brûlures urinaires et envies fréquentes depuis deux jours, puis fièvre à 39,1 °C avec frissons, nausées et douleur du flanc gauche. Douleur à la percussion lombaire gauche. Bandelette urinaire positive pour leucocytes et nitrites.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-06",
+    "expected": "Cystite aiguë",
+    "source": "https://www.nhs.uk/conditions/urinary-tract-infections-utis/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 28 ans non enceinte, brûlures à la miction, pollakiurie et pesanteur sus-pubienne depuis un jour. Température 36,8 °C, état général conservé. Pas de douleur lombaire, pas de frissons ni de pertes vaginales. Bandelette urinaire positive pour leucocytes et nitrites.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-07",
+    "expected": "Migraine",
+    "source": "https://www.nhs.uk/conditions/migraine/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 32 ans, épisodes récurrents de céphalée unilatérale pulsatile durant plusieurs heures, majorée par l’activité, avec nausées, photophobie et phonophobie. Épisode actuel semblable aux précédents. Pas de fièvre, pas de début brutal, pas de déficit neurologique, examen neurologique normal.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  },
+  {
+    "id": "case-08",
+    "expected": "Méningite aiguë",
+    "source": "https://www.nhs.uk/conditions/meningitis/",
+    "input": {
+      "transcription": "Vignette entièrement fictive pour un test logiciel. Adulte de 21 ans, fièvre à 39,5 °C, céphalée intense croissante, vomissements et photophobie apparus en quelques heures. Raideur de nuque et confusion. Pas d’antécédent de céphalées similaires. Aucun diagnostic microbiologique disponible.",
+      "vital_signs": {},
+      "confirmed_symptoms": [],
+      "images_base64": []
+    }
+  }
+]

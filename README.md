@@ -41,17 +41,17 @@ Ouvrir http://localhost:3000. API : http://localhost:8000/docs. Les appels néce
 - Aucun usage clinique, aucune garantie diagnostique ou conformité HDS revendiqués.
 - L’application envoie les entrées soumises aux modèles externes Groq. Elle ne contient pas de mécanisme de pseudonymisation ni de journal d’audit.
 - La validation humaine n’est pas imposée par le backend ; le prototype ne doit pas être exposé publiquement avec une clé API.
-- La lecture vocale et la caméra dépendent des permissions et capacités du navigateur. L’analyse d’images est expérimentale ; les PDF ne sont pas convertis en images.
+- La lecture vocale et la caméra dépendent des permissions et capacités du navigateur. L’analyse d’images nécessite un modèle compatible configuré avec MEDDIAG_VISION_MODEL ; elle est désactivée par défaut. Les PDF ne sont pas convertis en images.
 - Les exports sont des sorties de démonstration, pas des documents médicaux officiels.
 - Aucun modèle n’est entraîné dans ce dépôt. La disponibilité des identifiants de modèles doit être vérifiée auprès du fournisseur.
 
 ## Démonstration vidéo
 
-[![Voir la démonstration MedDiag](docs/media/meddiag-demo.webp)](docs/media/meddiag-demo.mp4)
+[![Voir la démonstration MedDiag](docs/media/meddiag-demo.png)](docs/media/meddiag-demo.mp4)
 
-[Lire ou télécharger la vidéo MP4 (51 secondes)](docs/media/meddiag-demo.mp4).
+[Lire ou télécharger la vidéo MP4 (55 secondes)](docs/media/meddiag-demo.mp4).
 
-Enregistrement de l’interface réelle avec données fictives et réponses IA simulées, sans appel à Groq. Il montre la collecte, la structuration, les résultats, la transmission locale du dossier et sa validation dans l’interface médecin. Les valeurs et hypothèses ne sont pas des conclusions médicales. Vidéo muette avec explications incrustées, [sous-titres français](docs/media/meddiag-demo.fr.vtt) et [description du parcours](docs/demo-video.md).
+Enregistrement de l’interface réelle avec Caneval Gabrielle comme nom de démonstration et un patient fictif. Les réponses du cas de pneumonie ont réellement été obtenues via Groq puis rejouées sans modification pendant la capture. La justification invente des détails (IRM, ECG), signalés dans la vidéo. Il montre la collecte, la structuration, les résultats, la transmission locale du dossier et sa validation dans l’interface médecin. Les valeurs et hypothèses ne sont pas des conclusions médicales. Vidéo muette avec explications incrustées, [sous-titres français](docs/media/meddiag-demo.fr.vtt) et [description du parcours](docs/demo-video.md).
 
 ## Vérification technique
 
@@ -60,3 +60,9 @@ Enregistrement de l’interface réelle avec données fictives et réponses IA s
 ## Droits
 
 Code consultable, tous droits réservés. Voir [LICENSE](LICENSE).
+
+## Essai pédagogique du 29 octobre 2026
+
+Les anciens modèles configurés étaient introuvables : 8 échecs techniques au premier essai. Après configuration des modèles disponibles (GPT-OSS 20B, GPT-OSS 120B et Qwen 3.8 27B), le même jeu donne 1 réponse exploitable sur 8 ; les sept autres échouent dans un contexte de limites de débit/quota. La pneumonie attendue apparaît au premier rang, mais la justification ajoute une IRM et un ECG non fournis. Ce bilan ne mesure donc pas une précision diagnostique.
+
+Protocole, cas synthétiques, paramètres effectifs et sorties : [evaluation](evaluation/README.md). Les cas sont fixés avant exécution ; tous les échecs sont conservés. Les modèles de secours effectivement utilisés sont consignés. Aucun résultat clinique n’est revendiqué.

@@ -28,3 +28,6 @@ Thumbs.db
 # Captures de travail : seuls le MP4 final, son affiche et les sous-titres sont publiés.
 docs/media/page@*.webm
 docs/media/*.png
+
+# Working video recordings
+evaluation/recording/
