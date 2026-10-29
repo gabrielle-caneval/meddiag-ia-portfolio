@@ -1,0 +1,40 @@
+{
+  "scope": "Single guided fictional demonstration, not a clinical evaluation or benchmark",
+  "recorded_at": "2026-10-29T18:59:56.832121+00:00",
+  "source_run_sha256": "b085ff2b357fdc461ee7ad526c1b0459e5777ea6b2bc2c0a61050db4b4803bcb",
+  "models_returned": [
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "openai/gpt-oss-120b"
+  ],
+  "source_text": "Vignette entièrement fictive pour un test logiciel. Adulte de 42 ans, toux productive depuis quatre jours, fièvre à 39 °C, essoufflement et douleur thoracique droite augmentée par l’inspiration. Crépitants localisés à la base droite. Radiographie : foyer de condensation alvéolaire basal droit. Pas d’antécédent respiratoire connu. Compléments fictifs du scénario de démonstration : fréquence respiratoire 32/min, saturation 88 % à l’air ambiant, fréquence cardiaque 96/min, tension 115/75 mmHg, patient conscient et orienté. Pas de cancer connu, immobilisation récente, chirurgie récente ni antécédent thromboembolique. Antigène pneumococcique urinaire positif. Il s’agit d’un cas pédagogique complet, pas d’un cas de benchmark.",
+  "displayed_result": {
+    "hypotheses": [
+      {
+        "diagnostic": "pneumonie bactérienne pneumocoque",
+        "evidence_quotes": [
+          "Adulte de 42 ans, toux productive depuis quatre jours, fièvre à 39 °C, essoufflement et douleur thoracique droite augmentée par l’inspiration.",
+          "Crépitants localisés à la base droite.",
+          "Radiographie : foyer de condensation alvéolaire basal droit.",
+          "Antigène pneumococcique urinaire positif."
+        ],
+        "rang": 1
+      }
+    ],
+    "educational": true,
+    "source_text": "Vignette entièrement fictive pour un test logiciel. Adulte de 42 ans, toux productive depuis quatre jours, fièvre à 39 °C, essoufflement et douleur thoracique droite augmentée par l’inspiration. Crépitants localisés à la base droite. Radiographie : foyer de condensation alvéolaire basal droit. Pas d’antécédent respiratoire connu. Compléments fictifs du scénario de démonstration : fréquence respiratoire 32/min, saturation 88 % à l’air ambiant, fréquence cardiaque 96/min, tension 115/75 mmHg, patient conscient et orienté. Pas de cancer connu, immobilisation récente, chirurgie récente ni antécédent thromboembolique. Antigène pneumococcique urinaire positif. Il s’agit d’un cas pédagogique complet, pas d’un cas de benchmark."
+  },
+  "verification": "Schema, source passage integrity and replay identity checked; medical validity not established",
+  "code_sha256": {
+    "pipeline/educational.py": "9c0b20bdcfa2df9486cdbddbb51155bb6bcac0ad61c1542a62a6de9027d5ae81",
+    "pipeline/nodes.py": "4a2f276ceebe9246017fbf505b5979e93cd116ea8320a5dd47bd28d42f08ba2f"
+  },
+  "media": {
+    "duration_seconds": 53.76,
+    "sha256": "5af9f88b410ab51ca098d41890aa2bdc77f4ee016103aa1ce28e16ac4cdd830f"
+  }
+}

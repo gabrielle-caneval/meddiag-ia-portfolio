@@ -36,6 +36,7 @@ PREP_MODEL = os.getenv("MEDDIAG_PREP_MODEL", "openai/gpt-oss-20b")
 TEXT_MODEL = os.getenv("MEDDIAG_TEXT_MODEL", "openai/gpt-oss-120b")
 MODEL_B = os.getenv("MEDDIAG_MODEL_B", "openai/gpt-oss-20b")
 MODEL_ARBITER = os.getenv("MEDDIAG_ARBITER_MODEL", "openai/gpt-oss-120b")
+EDUCATIONAL_MODE = os.getenv("MEDDIAG_EDUCATIONAL_MODE", "1") == "1"
 VISION_MODEL = os.getenv("MEDDIAG_VISION_MODEL", "")
 
 
@@ -60,6 +61,8 @@ def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int =
                 max_tokens=max_tokens,
                 **({"reasoning_effort": "low"} if m.startswith("openai/gpt-oss-") else {}),
             )
+            if response.choices[0].finish_reason != "stop":
+                raise ValueError("Model response incomplete; not passed to subsequent stages")
             return response.choices[0].message.content
         except Exception as e:
             err_str = str(e)
@@ -77,6 +80,8 @@ def call_llm(system: str, user: str, temperature: float = 0.3, max_tokens: int =
                                 temperature=temperature, max_tokens=max_tokens,
                             **({"reasoning_effort": "low"} if m.startswith("openai/gpt-oss-") else {}),
                             )
+                            if response.choices[0].finish_reason != "stop":
+                                raise ValueError("Model response incomplete")
                             return response.choices[0].message.content
                         except Exception:
                             pass
@@ -276,8 +281,16 @@ async def initialization_node(state: dict) -> dict:
     if image_analysis:
         image_section = f"\n\nAnalyse des documents/images fournis :\n{image_analysis}"
 
+    if EDUCATIONAL_MODE:
+        output = call_llm(
+            system="Analyse pédagogique brève de données fictives. Pas de traitement, de score ou de fait inventé. Maximum 80 mots.",
+            user='Liste uniquement les faits explicitement présents et les informations manquantes, en 80 mots maximum.' + "\nSOURCE :\n" + state["structured_data"].get("source_text", ""),
+            model=PREP_MODEL, temperature=0.1, max_tokens=2000,
+        )
+        return {**state, "current_step":1, "step_outputs":{**state.get("step_outputs", {}), "step_1":output}}
+
     output = call_llm(
-        system=SYSTEM_INIT,
+        system=("Extrais les faits et inconnues du cas fictif. Aucun traitement, score ni fait inventé." if EDUCATIONAL_MODE else SYSTEM_INIT),
         model=PREP_MODEL,
         user=f"""Données patient structurées :
 {ctx}{image_section}
@@ -298,8 +311,16 @@ async def generation_node(state: dict) -> dict:
     """Nœud ② — Génération diagnostique (IA₁)"""
     step1_output = state["step_outputs"]["step_1"]
 
+    if EDUCATIONAL_MODE:
+        output = call_llm(
+            system="Analyse pédagogique brève de données fictives. Pas de traitement, de score ou de fait inventé. Maximum 80 mots.",
+            user='Propose une hypothèse principale provisoire et cite les éléments fournis qui la soutiennent, en 80 mots maximum. Aucun traitement, aucune exclusion.' + "\nSOURCE :\n" + state["structured_data"].get("source_text", ""),
+            model=PREP_MODEL, temperature=0.1, max_tokens=2000,
+        )
+        return {**state, "current_step":2, "step_outputs":{**state.get("step_outputs", {}), "step_2":output}}
+
     output = call_llm(
-        system=SYSTEM_GEN,
+        system=("Analyse pédagogique : propose des hypothèses, distingue faits et inconnues. Ne conclus aucune exclusion. Aucun traitement ni score." if EDUCATIONAL_MODE else SYSTEM_GEN),
         model=PREP_MODEL,
         user=f"""Données source faisant autorité : {json.dumps(state["structured_data"], ensure_ascii=False)}
 
@@ -321,8 +342,16 @@ async def evaluation_node(state: dict) -> dict:
     """Nœud ③ — Évaluation LLM (IA₂)"""
     step2_output = state["step_outputs"]["step_2"]
 
+    if EDUCATIONAL_MODE:
+        output = call_llm(
+            system="Analyse pédagogique brève de données fictives. Pas de traitement, de score ou de fait inventé. Maximum 80 mots.",
+            user='Signale les limites de cette hypothèse et les informations manquantes, en 80 mots maximum. Aucun traitement, aucun score, aucune exclusion.' + "\nSOURCE :\n" + state["structured_data"].get("source_text", ""),
+            model=PREP_MODEL, temperature=0.1, max_tokens=2000,
+        )
+        return {**state, "current_step":3, "step_outputs":{**state.get("step_outputs", {}), "step_3":output}}
+
     output = call_llm(
-        system=SYSTEM_EVAL,
+        system=("Vérifie la cohérence textuelle avec la source. Signale les affirmations non étayées. Aucun traitement ni score. Ceci n’est pas une validation clinique." if EDUCATIONAL_MODE else SYSTEM_EVAL),
         model=PREP_MODEL,
         user=f"""Données source faisant autorité : {json.dumps(state["structured_data"], ensure_ascii=False)}
 
@@ -368,6 +397,9 @@ async def predictive_node(state: dict) -> dict:
                                   ├─→ IA C (gpt-oss-120b) arbitre → Diagnostic final
       IA B (kimi-k2-instruct-0905) ─┘
     """
+    if EDUCATIONAL_MODE:
+        from pipeline.educational import predict
+        return await predict(state, call_llm, TEXT_MODEL, MODEL_B, MODEL_ARBITER)
     step3_output = state["step_outputs"]["step_3"]
     ctx = json.dumps(state["structured_data"], ensure_ascii=False, indent=2)
 
@@ -628,9 +660,14 @@ Réponds UNIQUEMENT en JSON valide :
         )
         clean = output.replace("```json", "").replace("```", "").strip()
         start, end = clean.find("{"), clean.rfind("}") + 1
-        return json.loads(clean[start:end])
+        structured = json.loads(clean[start:end])
+        structured["source_text"] = raw_data.transcription
+        # Explicitly entered measurements take precedence over extraction.
+        structured["constantes_vitales"] = {**structured.get("constantes_vitales", {}), **raw_data.vital_signs.model_dump(exclude_none=True)}
+        return structured
     except Exception:
         return {
+            "source_text": raw_data.transcription,
             "motif_consultation":   raw_data.transcription[:200],
             "symptomes_principaux": raw_data.confirmed_symptoms,
             "constantes_vitales":   raw_data.vital_signs.model_dump(),

@@ -56,6 +56,7 @@ class PatientRawData(BaseModel):
 
 
 class StructuredPatientData(BaseModel):
+    source_text: str = ""  # Original narrative, never supplied by an LLM
     motif_consultation:  str
     symptomes_principaux: list[str]        = Field(default_factory=list)
     constantes_vitales:  VitalSigns        = Field(default_factory=VitalSigns)

@@ -25,7 +25,7 @@ Formulation éventuelle : « X/8 diagnostics attendus retrouvés au premier rang
 
 ## Nouvelle vidéo
 
-Le scénario de démonstration est une pneumonie fictive avec données complètes, distincte du benchmark. Le script `record-demo.cjs` attend un fichier de résultats réel via `EVAL_RUN`. Il rejoue exactement les réponses enregistrées du cas 01 dans l'interface, sans inventer les hypothèses. La vidéo porte la mention « réponses IA enregistrées, rejouées » : elle ne prétend pas montrer un appel en direct. Si la réponse est erronée, le commentaire doit le dire ; ne pas remplacer la sortie par la réponse attendue.
+Le scénario de démonstration est une pneumonie fictive avec données complètes, distincte du benchmark. Le script `record-demo.cjs` attend un fichier de résultats réel via `EVAL_RUN`. Il rejoue exactement les réponses enregistrées du cas 01 dans l'interface, sans inventer les hypothèses. Le parcours pédagogique par défaut affiche les hypothèses et citations, sans score ni prescription. Voir [les limites et vérifications](../docs/demo-review.md). La vidéo porte la mention « réponses IA enregistrées, rejouées » : elle ne prétend pas montrer un appel en direct. Si la réponse est erronée, le commentaire doit le dire ; ne pas remplacer la sortie par la réponse attendue.
 
 « Caneval Gabrielle » est le nom de démonstration de l'utilisatrice. Le patient porte un nom explicitement fictif. La maladie du scénario ne décrit pas la santé de Gabrielle.
 

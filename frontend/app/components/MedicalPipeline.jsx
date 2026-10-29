@@ -674,7 +674,7 @@ function Phase2({data,imageAnalysis,onNext,onBack}) {
           </div>
           <div>
             <div style={{fontSize:14,fontWeight:700,color:P.text}}>Point de contrôle infirmier</div>
-            <div style={{fontSize:12,color:P.textSub,marginTop:2}}>Vérifiez que les données ci-dessous correspondent bien au patient. En validant, vous engagez votre responsabilité clinique.</div>
+            <div style={{fontSize:12,color:P.textSub,marginTop:2}}>Vérifiez que les données ci-dessous correspondent bien au patient. Ce contrôle local ne constitue pas une validation clinique.</div>
           </div>
         </div>
       </div>
@@ -1192,6 +1192,40 @@ function PromptBlock({prompt}) {
   );
 }
 
+
+// Restricted educational presentation. Never render legacy therapy/score fields here.
+function EducationalResults({data,children}) {
+  return <section style={{maxWidth:1000,margin:"0 auto",padding:"22px 12px",color:P.text}}>
+    <div style={{color:P.azurDark,fontSize:12,fontWeight:700,letterSpacing:1,marginBottom:12}}>CAS FICTIF · PARCOURS PÉDAGOGIQUE</div>
+    <h2 style={{fontSize:27,margin:"0 0 12px"}}>Hypothèses à examiner</h2>
+    <p style={{color:P.textSub,lineHeight:1.65}}>Les modèles proposent une lecture du cas. Les citations sont vérifiées dans le texte saisi ; leur présence ne prouve pas le diagnostic.</p>
+    {data.hypotheses.map((h,i)=><article key={i} style={{...card({padding:22,marginBottom:14})}}>
+      <div style={{fontSize:12,color:P.azurDark}}>PROPOSITION {i+1} · NON CONFIRMÉE</div>
+      <h3 style={{fontSize:22,margin:"10px 0 16px"}}>{h.diagnostic}</h3>
+      <div style={{fontWeight:600,fontSize:13}}>Éléments cités dans le scénario</div>
+      <ul style={{paddingLeft:20,lineHeight:1.65,fontSize:14,color:P.textSub}}>{h.evidence_quotes.map((q,j)=><li key={j} style={{margin:"7px 0"}}>« {q} »</li>)}</ul>
+    </article>)}
+    <aside style={{borderLeft:`3px solid ${P.turquoise}`,padding:"8px 16px",margin:"18px 0",fontSize:14,lineHeight:1.65}}>
+      <strong>Ce que cette démonstration ne permet pas de conclure</strong><br/>
+      Aucun diagnostic alternatif n’est exclu. Aucun traitement ni score de fiabilité n’est fourni dans ce parcours. L’accord de plusieurs modèles n’est pas une validation clinique.
+    </aside>
+    <details style={{margin:"18px 0",fontSize:13,lineHeight:1.65}}><summary style={{cursor:"pointer"}}>Relire le scénario original</summary><p>{data.source_text}</p></details>
+    {children}
+  </section>;
+}
+
+function EducationalReview({selected,onCaseUpdate}) {
+  const [ack,setAck]=useState(false);
+  return <EducationalResults data={selected.diagnostic}>
+    <h3>Revue pédagogique simulée</h3>
+    <p style={{fontSize:14,lineHeight:1.65}}>Dossier fictif transmis par {selected.nurseUser?.name}. Le rôle « médecin » est un état local du navigateur, sans authentification serveur.</p>
+    {selected.educationalReviewed?<p role="status" style={{color:P.azurDark,fontWeight:700}}>Relecture simulée enregistrée. Aucun diagnostic médical validé.</p>:<>
+      <label style={{display:"flex",gap:10,fontSize:14,marginBottom:16}}><input type="checkbox" checked={ack} onChange={e=>setAck(e.target.checked)}/>J’ai relu le scénario, les citations et les limites de la démonstration.</label>
+      <Btn disabled={!ack} onClick={()=>{if(ack)onCaseUpdate({...selected,educationalReviewed:true});}}>Enregistrer la relecture simulée</Btn>
+    </>}
+  </EducationalResults>;
+}
+
 function Phase4({data,onReset,onBack,userRole="infirmier",user,structData,patientAddress="",onSubmitToDoctor,submittedCase}) {
   const [showExplain,setShowExplain]=useState(false);
   const [submitted,setSubmitted]=useState(false);
@@ -1199,6 +1233,13 @@ function Phase4({data,onReset,onBack,userRole="infirmier",user,structData,patien
   const [showConsensus,setShowConsensus]=useState(false);
   const urgColor=URGENCE_C[data.urgence]||P.orange;
   const consensus=data.consensus;
+
+  if(data.educational) return <EducationalResults data={data}>
+    {submitted?<p role="status">Dossier transmis dans cette session locale.</p>:<Btn onClick={()=>{
+      onSubmitToDoctor?.({patientName,patientAddress:"",nurseUser:user,timestamp:new Date().toLocaleString("fr-FR"),structData,diagnostic:data});
+      setSubmitted(true);
+    }}>Transmettre au médecin</Btn>}
+  </EducationalResults>;
 
   return (
     <div style={{animation:"fadeIn 0.35s ease-out"}}>
@@ -1625,6 +1666,7 @@ function DoctorInterface({user, cases, onCaseUpdate}) {
   );
 
   const d = selected.diagnostic||{};
+  if(d.educational) return <EducationalReview key={selected.id} selected={selected} onCaseUpdate={updated=>{setSelected(updated);onCaseUpdate(updated);}}/>;
   const urgColor = URGENCE_C[d.urgence]||P.orange;
   const specialty = getSpecialtySuggestion(d.hypotheses, d.conduite);
 

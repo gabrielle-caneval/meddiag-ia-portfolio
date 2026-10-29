@@ -15,7 +15,7 @@ class PipelineTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_invalid_arbitration_does_not_invent_result(self):
         state = {'structured_data':{},'step_outputs':{'step_3':'test'},'current_step':3}
-        with patch.object(nodes, 'call_llm', return_value='invalid JSON'):
+        with patch.object(nodes, 'EDUCATIONAL_MODE', False), patch.object(nodes, 'call_llm', return_value='invalid JSON'):
             with self.assertRaises(ValueError):
                 await nodes.predictive_node(state)
 

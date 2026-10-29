@@ -5,11 +5,13 @@ Prototype académique de Gabrielle Caneval : interface Next.js/React, API FastAP
 ## Fonctionnement
 
 1. Saisie d’un cas fictif et structuration de l’entrée.
-2. Préparation du contexte, génération et évaluation du prompt.
+2. Préparation du contexte et analyse préliminaire de ses limites.
 3. Deux appels LLM en parallèle, suivis d’un troisième appel d’arbitrage.
-4. Affichage des hypothèses et validation dans l’interface.
+4. Affichage pédagogique des hypothèses, citations vérifiées et relecture simulée.
 
-La sélection infirmier/médecin et la validation sont des états de l’interface : elles ne constituent ni une authentification ni un contrôle d’autorisation serveur. Les résultats ne sont pas validés cliniquement. Les scores produits par les modèles ne sont pas des probabilités calibrées.
+Le parcours pédagogique est activé par défaut. [Corrections, contrôles et limites détaillés](docs/demo-review.md).
+
+La sélection infirmier/médecin et la validation sont des états de l’interface : elles ne constituent ni une authentification ni un contrôle d’autorisation serveur. Les résultats ne sont pas validés cliniquement. Le nouveau parcours ne présente aucun score ni prescription. Les fonctions historiques restent non validées et sont distinguées dans la documentation.
 
 ## Lancement local
 
@@ -49,13 +51,13 @@ Ouvrir http://localhost:3000. API : http://localhost:8000/docs. Les appels néce
 
 [![Voir la démonstration MedDiag](docs/media/meddiag-demo.png)](docs/media/meddiag-demo.mp4)
 
-[Lire ou télécharger la vidéo MP4 (49 secondes)](docs/media/meddiag-demo.mp4).
+[Lire ou télécharger la vidéo MP4 (54 secondes)](docs/media/meddiag-demo.mp4).
 
-Enregistrement de l’interface réelle avec Caneval Gabrielle comme nom de démonstration et un patient fictif. Les réponses du cas de pneumonie ont réellement été obtenues via Groq puis rejouées sans modification pendant la capture. Il montre la collecte, la structuration, les résultats, la transmission locale du dossier et sa validation dans l’interface médecin. Les valeurs et hypothèses ne sont pas des conclusions médicales. Vidéo muette avec explications incrustées, [sous-titres français](docs/media/meddiag-demo.fr.vtt) et [description du parcours](docs/demo-video.md).
+Enregistrement de l’interface réelle avec Caneval Gabrielle comme nom de démonstration et un patient fictif. Les réponses du cas de pneumonie ont réellement été obtenues via Groq puis rejouées sans modification pendant la capture. Il montre la collecte, la structuration, les résultats, la transmission locale du dossier et sa relecture pédagogique simulée. Les citations sont contrôlées par rapport au texte saisi ; les hypothèses ne sont pas des conclusions médicales. Vidéo muette avec explications incrustées, [sous-titres français](docs/media/meddiag-demo.fr.vtt) et [description du parcours](docs/demo-video.md).
 
 ## Vérification technique
 
-`python -m unittest discover -s tests -v` contrôle la conservation du contexte LangGraph et le refus d’un arbitrage invalide, avec appels LLM simulés. Le frontend a été compilé avec `npm run build`. Aucun diagnostic réel n’a été validé.
+`python -m unittest discover -s tests -v` contrôle le contexte LangGraph, la conservation de la source originale, le rejet des citations inventées, des champs supplémentaires et des arbitrages invalides, avec appels LLM simulés. Le frontend a été compilé avec `npm run build`. Aucun diagnostic réel n’a été validé.
 
 ## Droits
 
